@@ -1,4 +1,4 @@
-
+from __future__ import annotations
 
 # names of hurricanes
 names = ['Cuba I', 'San Felipe II Okeechobee', 'Bahamas', 'Cuba II', 'CubaBrownsville', 'Tampico', 'Labor Day', 'New England', 'Carol', 'Janet', 'Carla', 'Hattie', 'Beulah', 'Camille', 'Edith', 'Anita', 'David', 'Allen', 'Gilbert', 'Hugo', 'Andrew', 'Mitch', 'Isabel', 'Ivan', 'Emily', 'Katrina', 'Rita', 'Wilma', 'Dean', 'Felix', 'Matthew', 'Irma', 'Maria', 'Michael']
@@ -18,14 +18,26 @@ areas_affected = [['Central America', 'Mexico', 'Cuba', 'Florida', 'The Bahamas'
 # damages (USD($)) of hurricanes
 damages = ['Damages not recorded', '100M', 'Damages not recorded', '40M', '27.9M', '5M', 'Damages not recorded', '306M', '2M', '65.8M', '326M', '60.3M', '208M', '1.42B', '25.4M', 'Damages not recorded', '1.54B', '1.24B', '7.1B', '10B', '26.5B', '6.2B', '5.37B', '23.3B', '1.01B', '125B', '12B', '29.4B', '1.76B', '720M', '15.1B', '64.8B', '91.6B', '25.1B']
 
+conversion = {"M": 1000000,
+              "B": 1000000000}
+
 # deaths for each hurricane
 deaths = [90,4000,16,3103,179,184,408,682,5,1023,43,319,688,259,37,11,2068,269,318,107,65,19325,51,124,17,1836,125,87,45,133,603,138,3057,74]
 
 # write your update damages function here:
 
-def damage_update(damages)
+def damage_update(damages):
+    res = []
+    for record in damages:
+        if record == "Damages not recorded":
+            res.append(record)
+        else:
+            res.append(float(record[:-1]) * conversion[record[-1]])
+    return res
 
-
+print(damages)
+print("\n")
+print(damage_update(damages))
 
 
 
