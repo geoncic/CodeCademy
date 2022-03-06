@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections import defaultdict
 
 # names of hurricanes
 names = ['Cuba I', 'San Felipe II Okeechobee', 'Bahamas', 'Cuba II', 'CubaBrownsville', 'Tampico', 'Labor Day', 'New England', 'Carol', 'Janet', 'Carla', 'Hattie', 'Beulah', 'Camille', 'Edith', 'Anita', 'David', 'Allen', 'Gilbert', 'Hugo', 'Andrew', 'Mitch', 'Isabel', 'Ivan', 'Emily', 'Katrina', 'Rita', 'Wilma', 'Dean', 'Felix', 'Matthew', 'Irma', 'Maria', 'Michael']
@@ -37,64 +38,138 @@ def damage_update(damages):
 
 print(damages)
 print("\n")
-print(damage_update(damages))
-
+damages_updated = damage_update(damages)
 
 
 # write your construct hurricane dictionary function here:
-
-
-
-
-
-
+def hurricanes_by_name(names, months, years, winds, areas, damages, deaths):
+    res = {}
+    for i, name in enumerate(names):
+        dict = {'Name': name,
+                'Month': months[i],
+                'Year': years[i],
+                'Max Sustained Winds': winds[i],
+                'Areas Affected': areas[i],
+                'Damage': damages[i],
+                'Deaths': deaths[i]
+                }
+        res[name] = dict
+    return res
 
 # write your construct hurricane by year dictionary function here:
+def hurricanes_by_year(names, months, years, winds, areas, damages, deaths):
+    res = {}
+    for i, year in enumerate(years):
+        dict = {'Name': names[i],
+                'Month': months[i],
+                'Year': years[i],
+                'Max Sustained Winds': winds[i],
+                'Areas Affected': areas[i],
+                'Damage': damages[i],
+                'Deaths': deaths[i]
+                }
+        try:
+            res[year].append(dict)
+        except KeyError:
+            res[year] = [dict]
+    return res
 
 
+hurricanes_name = hurricanes_by_name(names, months, years, max_sustained_winds, areas_affected, damages_updated, deaths)
+hurricanes_year = hurricanes_by_year(names, months, years, max_sustained_winds, areas_affected, damages_updated, deaths)
 
-
-
-
+# print(hurricanes_year[1932])
 
 # write your count affected areas function here:
+def hurricane_count_by_area(areas):
+    res = defaultdict(int)
+    for hurricane in areas:
+        for area in hurricane:
+            res[area] += 1
+    return res
 
-
-
-
-
-
+hurricane_area_count = hurricane_count_by_area(areas_affected)
 
 # write your find most affected area function here:
+def area_most_affected(a_count):
+    area = max(a_count, key=a_count.get)
+    return area, a_count[area]
 
-
-
-
-
-
+area, count = area_most_affected(hurricane_area_count)
+print(f"The most affected area was {area} with {count} hurricanes.")
 
 # write your greatest number of deaths function here:
 
+def deadliest(canes):
+    max_mortality = 0
+    max_mort_cane = 'None'
+    # print(canes)
+    for key, value in canes.items():
+        if value['Deaths'] > max_mortality:
+            max_mortality = value['Deaths']
+            max_mort_cane = key
+    print(canes[max_mort_cane])
 
+    return max_mort_cane, max_mortality
 
-
-
+print(deadliest(hurricanes_name))
 
 
 # write your catgeorize by mortality function here:
 
+mortality_scale = {0: 0,
+                   1: 100,
+                   2: 500,
+                   3: 1000,
+                   4: 10000}
 
+def mort_scale(canes):
+    res = defaultdict(list)
+    for name, value in canes.items():
+        for scale, deaths in reversed(mortality_scale.items()):
+            if value['Deaths'] > deaths:
+                res[scale].append(name)
+                break
+    return res
 
-
-
+hurricanes_by_mortality = mort_scale(hurricanes_name)
 
 
 # write your greatest damage function here:
 
+def greatest_damage(canes):
+    most_damage = 0
+    max_damage_cane = 'None'
+    for key, value in canes.items():
+        if isinstance(value['Damage'], float):
+            if value['Damage'] > most_damage:
+                most_damage = value['Damage']
+                max_damage_cane = key
 
+    return max_damage_cane, most_damage
 
-
-
-
+print(greatest_damage(hurricanes_name))
 
 # write your catgeorize by damage function here:
+
+damage_scale = {0: 0,
+                1: 100000000,
+                2: 1000000000,
+                3: 10000000000,
+                4: 50000000000}
+
+def dam_scale(canes):
+    res = defaultdict(list)
+    for name, value in canes.items():
+        if isinstance(value['Damage'], float):
+            for scale, damage in reversed(damage_scale.items()):
+                if value['Damage'] > damage:
+                    res[scale].append(name)
+                    break
+        else:
+            res[0].append(name)
+    return res
+
+hurricanes_by_damage = dam_scale(hurricanes_name)
+
+print(hurricanes_by_damage)
