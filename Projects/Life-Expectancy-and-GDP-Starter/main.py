@@ -6,10 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import numpy as np
-
-
-
 
 INPUT_TXT = os.path.join(os.path.dirname(__file__), 'all_data.csv')
 
@@ -47,10 +43,12 @@ def main():
     fig1, ax1 = plt.subplots()
     fig2, ax2 = plt.subplots()
     fig3, ((ax3, ax4), (ax5, ax6), (ax7, ax8)) = plt.subplots(nrows = 3, ncols = 2, figsize = (14, 10))
+    fig4, ax9 = plt.subplots()
+
     plt.subplots_adjust(hspace = 0.5, right = 0.9, left = 0.1, top = 0.9, bottom = 0.1)
 
 
-    sns.boxplot(data = all_data, x='Country', y='life_expectancy', ax=ax1)
+    sns.violinplot(data = all_data, x='Country', y='life_expectancy', ax=ax1)
     sns.lineplot(data = all_data, x = "Year", y = "GDP", hue = 'Country', ax = ax2)
 
     # plt.show(block=True)
@@ -70,6 +68,8 @@ def main():
     sns.regplot(data = all_data[all_data['Country'] == "Zimbabwe"], x = "GDP", y = "life_expectancy", scatter = True, fit_reg = True, ax = ax8)
     ax8.set_title("Zimbabwe")
 
+    sns.barplot(data = all_data, x = "Country", y = "GDP")
+    plt.xticks(rotation = 90)
 
     # plt.show(block=True)
     plt.show()
