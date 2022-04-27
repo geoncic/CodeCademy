@@ -27,8 +27,21 @@ def main():
     print(species_info.head())
 
     species_info.fillna('No Intervention', inplace=True)
-    print(species_info.groupby("conservation_status").size())
+    cons_category = species_info[species_info['conservation_status'] != "No Intervention"].groupby("conservation_status").size()
 
+    print(cons_category)
+    print(cons_category.index)
+
+    fig1, ax1 = plt.subplots()
+    fig2, ax2 = plt.subplots()
+
+    # ax1 = plt.pie(cons_category, labels = cons_category.index, colors=sns.color_palette('pastel'), autopct='%.0f%%')
+    # plt.show()
+    # plt.clf()
+    ax2 = sns.countplot(data = species_info, x = 'conservation_status', ax = ax2)
+
+    plt.show()
+    plt.interactive(False)
 
 if __name__ == "__main__":
     raise SystemExit(main())
