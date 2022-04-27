@@ -73,24 +73,72 @@ def main():
     # Merge Dataframes
 
     df = observations_cleaned.merge(species_info_cleaned, how = 'left')
-    print(df.head())
+    # print(df.head())
 
     # check for N/A values
-    print(df.isna().sum())
+    # print(df.isna().sum())
 
     # get an overview of the quantitative column data
-    print(df['observations'].describe())
+    # print(df['observations'].describe())
 
     # select only categorical columns
     cat_columns = df.select_dtypes(include='object')
 
     # get an overview of the categorical columns
 
-    print(cat_columns.describe())
+    # print(cat_columns.describe())
 
     species_info.fillna('No Intervention', inplace=True)
     cons_category = species_info[species_info['conservation_status'] != "No Intervention"].groupby("conservation_status").size()
 
+    # create list of animal categories
+    categories = df.category.unique()
+
+    # set custom color palette
+    category_palette = {'Vascular Plant': '#66c2a5', 'Mammal': '#fc8d62', 'Fish': '#a6cee3', 'Amphibian': '#e78ac3',
+                        'Nonvascular Plant': '#a6d854', 'Reptile': '#ffd92f', 'Bird': '#e5c494'}
+
+    # create a sorted dataframe of number of scientific_name by categories
+    species_by_category = df.groupby(['category'])
+    species_by_category = species_by_category['scientific_name'].nunique().reset_index(name='species_cnt')
+    species_by_category = species_by_category.sort_values('species_cnt', ascending=False).reset_index(drop=True)
+    print(species_by_category)
+
+    # create a bar chart of the number of species grouped by category
+    fig1, ax1 = plt.subplots(figsize=(14, 10))
+
+    # plot data
+    ax = sns.barplot(x = 'species_cnt', y = 'category', data = species_by_category, palette = category_palette, ax = ax1)
+    ax.set_title("The Number of Species Grouped by Categories", pad = 20)
+    ax.set_xlabel("Number of Species")
+    ax.set_ylabel("Categories")
+    # plt.show()
+    plt.close()
+
+    # create a sorted dataframe of number of scientific_name by park_name
+    species_by_park = df.groupby(['park_name'])
+    species_by_park = species_by_park['scientific_name'].nunique().reset_index(name='species_cnt')
+    species_by_park = species_by_park.sort_values('species_cnt', ascending=False).reset_index(drop=True)
+
+    print(species_by_park)
+
+    # create a bar chart of the number of species grouped by categories in each park
+    species_count_at_park = df.groupby(['park_name', 'category'])
+    species_count_at_park = species_count_at_park['scientific_name'].count().reset_index()
+    print(species_count_at_park)
+
+    # create a figure
+    fig2, ax2 = plt.subplots()
+
+    # plot data
+    ax2 = sns.barplot(x='park_name', y='scientific_name', hue = 'category', data = species_count_at_park, palette = category_palette, ax = ax2)
+    ax2.set_title("The Number of Species Grouped by Categories", fontsize='x-large', pad=20)
+    ax2.set_xlabel("National Park")
+    ax2.legend(loc = "upper left", bbox_to_anchor=[1, 1])
+    ax2.set_xticklabels(['Bryce', 'Great Smoky Mountains', 'Yellowstone', 'Yosemite'], rotation=20)
+    ax2.set_ylabel("Number of Species")
+    plt.show()
+    plt.close()
 
 
     ## ToDo: Define goals and analyze the data
