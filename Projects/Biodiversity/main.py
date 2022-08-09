@@ -39,8 +39,8 @@ def main():
     # print(species_info.head())
 
     # check for duplicate records
-    dup = observations[observations.duplicated(keep = False)]
-    dup = dup.sort_values(['scientific_name'])
+    # dup = observations[observations.duplicated(keep=False)]
+    # dup = dup.sort_values(['scientific_name'])
 
     # print(observations.shape)
     observations = observations.drop_duplicates()
@@ -48,31 +48,31 @@ def main():
 
     # check for records which have the same scientific_name and park_name (possibly conflicting observation counts)
 
-    dup2 = observations[observations.duplicated(subset=['scientific_name', 'park_name'], keep = False)]
-    dup2 = dup2.sort_values(['scientific_name', 'park_name'])
+    # dup2 = observations[observations.duplicated(subset=['scientific_name', 'park_name'], keep=False)]
+    # dup2 = dup2.sort_values(['scientific_name', 'park_name'])
     # print(dup2)
 
     # check shape of duplicate dataset
     # print(dup2.shape)
 
-    # drop duplicates by using the mean of the observations to represent the approximate number of observations for duplicate records
+    # drop duplicates by using the mean of the observations to represent the approximate number
+    # of observations for duplicate records
 
     # print(observations.groupby(['scientific_name', 'park_name'], as_index = False).mean())
 
-    observations_cleaned = observations.groupby(['scientific_name', 'park_name'], as_index = False).mean()
+    observations_cleaned = observations.groupby(['scientific_name', 'park_name'], as_index=False).mean()
     observations_cleaned = observations_cleaned.sort_values(['scientific_name', 'park_name'])
 
     # check for records which have the same category and scientific_name
-    dup3 = species_info[species_info.duplicated(subset =['category', 'scientific_name'], keep = False)]
-    dup3 = dup3.sort_values(['category', 'scientific_name'])
-
+    # dup3 = species_info[species_info.duplicated(subset=['category', 'scientific_name'], keep=False)]
+    # dup3 = dup3.sort_values(['category', 'scientific_name'])
 
     # drop duplicates and keep the first record
     species_info_cleaned = species_info.drop_duplicates(subset=['category', 'scientific_name'])
 
     # Merge Dataframes
 
-    df = observations_cleaned.merge(species_info_cleaned, how = 'left')
+    df = observations_cleaned.merge(species_info_cleaned, how='left')
     # print(df.head())
 
     # check for N/A values
@@ -82,17 +82,19 @@ def main():
     # print(df['observations'].describe())
 
     # select only categorical columns
-    cat_columns = df.select_dtypes(include='object')
+    # cat_columns = df.select_dtypes(include='object')
 
     # get an overview of the categorical columns
 
     # print(cat_columns.describe())
 
     species_info.fillna('No Intervention', inplace=True)
-    cons_category = species_info[species_info['conservation_status'] != "No Intervention"].groupby("conservation_status").size()
+    # cons_category = species_info[
+    # species_info['conservation_status']
+    # != "No Intervention"].groupby("conservation_status").size()
 
     # create list of animal categories
-    categories = df.category.unique()
+    # categories = df.category.unique()
 
     # set custom color palette
     category_palette = {'Vascular Plant': '#66c2a5', 'Mammal': '#fc8d62', 'Fish': '#a6cee3', 'Amphibian': '#e78ac3',
@@ -108,8 +110,8 @@ def main():
     fig1, ax1 = plt.subplots(figsize=(14, 10))
 
     # plot data
-    ax = sns.barplot(x = 'species_cnt', y = 'category', data = species_by_category, palette = category_palette, ax = ax1)
-    ax.set_title("The Number of Species Grouped by Categories", pad = 20)
+    ax = sns.barplot(x='species_cnt', y='category', data=species_by_category, palette=category_palette, ax=ax1)
+    ax.set_title("The Number of Species Grouped by Categories", pad=20)
     ax.set_xlabel("Number of Species")
     ax.set_ylabel("Categories")
     # plt.show()
@@ -131,21 +133,17 @@ def main():
     fig2, ax2 = plt.subplots()
 
     # plot data
-    ax2 = sns.barplot(x='park_name', y='scientific_name', hue = 'category', data = species_count_at_park, palette = category_palette, ax = ax2)
+    ax2 = sns.barplot(x='park_name', y='scientific_name', hue='category',
+                      data=species_count_at_park, palette=category_palette, ax=ax2)
     ax2.set_title("The Number of Species Grouped by Categories", fontsize='x-large', pad=20)
     ax2.set_xlabel("National Park")
-    ax2.legend(loc = "upper left", bbox_to_anchor=[1, 1])
+    ax2.legend(loc="upper left", bbox_to_anchor=[1, 1])
     ax2.set_xticklabels(['Bryce', 'Great Smoky Mountains', 'Yellowstone', 'Yosemite'], rotation=20)
     ax2.set_ylabel("Number of Species")
     plt.show()
     plt.close()
 
-
-    ## ToDo: Define goals and analyze the data
-
-
-
-
+    # ToDo: Define goals and analyze the data
 
     # print(cons_category)
     # print(cons_category.index)
@@ -162,6 +160,7 @@ def main():
 
     plt.show()
     plt.interactive(False)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
